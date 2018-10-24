@@ -43,8 +43,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Command\ConcreteCommands\CalculateInterest.cs" />
+    <Compile Include="Command\ConcreteCommands\CheckBalance.cs" />
+    <Compile Include="Command\ConcreteCommands\Deposit.cs" />
+    <Compile Include="Command\ConcreteCommands\Withdraw.cs" />
+    <Compile Include="Command\ITransaction.cs" />
+    <Compile Include="Invoker\Teller.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="ProgramUI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Receiver\BankAccount.cs" />
+    <Compile Include="Receiver\IAccount.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
