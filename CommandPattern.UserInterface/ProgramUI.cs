@@ -12,18 +12,21 @@ namespace CommandPattern.UserInterface
 {
     public class ProgramUI
     {
+        #region Fields
+        //-- Used to simulate creating IDs for Transactions
         private int _transactionCount;
 
-        private ITransaction _interest;
-        private ITransaction _balance;
-        private ITransaction _deposit;
-        private ITransaction _withdraw;
-        private ITransaction _revert;
-
+        //-- Declaring the Receiver
         private IAccount _account;
 
-        private Teller _teller;
+        //-- Declaring the Commands that will be used in the Invoker
+        private ITransaction _interest, _balance, _deposit, _withdraw, _revert;
 
+        //-- Declaring the Invoker
+        private Teller _teller;
+        #endregion
+
+        //-- Constructor that will assign values/instantiate the classes
         public ProgramUI()
         {
             _transactionCount = 1;
@@ -43,6 +46,7 @@ namespace CommandPattern.UserInterface
             _teller = new Teller(_interest, _balance, _deposit, _withdraw);
         }
 
+        //-- Method that can be called from the outside that runs the bulk of the program
         public void Run()
         {
             while (true)
@@ -56,6 +60,8 @@ namespace CommandPattern.UserInterface
                     "\n5) See Account History" +
                     "\n6) Revert Transaction");
 
+
+                //-- Interactive code that allows the user to decide which Concrete Command they want to fire off
                 int response;
                 while (!int.TryParse(Console.ReadLine(), out response))
                 {
@@ -89,6 +95,8 @@ namespace CommandPattern.UserInterface
             }
         }
 
+        #region Invoker Methods
+        //-- Helper methods that allow us to break up the code that needs to fire to invoke a Concrete Command
         private void DoBalance()
         {
             _balance = new CheckBalance(_account, _transactionCount);
@@ -141,6 +149,18 @@ namespace CommandPattern.UserInterface
                 }
             }
         }
+        #endregion
+
+
+        //-- Other helper methods
+        private void EndSwitch()
+        {
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadKey();
+            Console.Clear();
+            UpdateTeller();
+        }
+
         private ITransaction GetTransaction()
         {
             int value = 0;
@@ -149,7 +169,9 @@ namespace CommandPattern.UserInterface
             Console.WriteLine("Which Transaction would you like to revert?");
 
             while (!int.TryParse(Console.ReadLine(), out value) || !(_teller.GetHistory().Count >= value))
-            { Console.Write("Enter valid input: "); }
+            {
+                Console.Write("Enter valid input: ");
+            }
 
             if (value != 0)
             {
@@ -157,14 +179,6 @@ namespace CommandPattern.UserInterface
                 return transaction;
             }
             else return new CheckBalance(_account, 0);
-        }
-
-        private void EndSwitch()
-        {
-            Console.WriteLine("Press any key to continue...");
-            Console.ReadKey();
-            Console.Clear();
-            UpdateTeller();
         }
 
         private decimal GetValue()
