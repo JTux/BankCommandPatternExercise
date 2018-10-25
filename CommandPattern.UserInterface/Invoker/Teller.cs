@@ -9,68 +9,43 @@ namespace CommandPattern.UserInterface.Invoker
 {
     public class Teller
     {
-        private ITransaction _calculateInterestCommand;
-        private ITransaction _checkBalanceCommand;
-        private ITransaction _depositCommand;
-        private ITransaction _withdrawCommand;
-        private ITransaction _revertCommand;
+        public ITransaction CalculateInterestCommand, CheckBalanceCommand, DepositCommand, WithdrawCommand, RevertCommand;
+        public List<ITransaction> AccountHistory;
 
-        private List<ITransaction> _accountHistory;
-
-        //-- There are two Constructors
-        //-- The first Constructor is used when the Invoker is originally created on a brand new Account
+        //-- Constructor
         public Teller(ITransaction calcInterest, ITransaction checkBal, ITransaction deposit, ITransaction withdraw)
         {
-            _accountHistory = new List<ITransaction>();
-            _calculateInterestCommand = calcInterest;
-            _checkBalanceCommand = checkBal;
-            _depositCommand = deposit;
-            _withdrawCommand = withdraw;
-        }
-
-        //-- The second Constructor is used anytime after the initial creation and allows the Concrete Commands to be updated
-        //TODO: Create public methods that allow these to be updated in existing Invoker
-        public Teller(ITransaction calcInterest, ITransaction checkBal, ITransaction deposit, ITransaction withdraw, List<ITransaction> newList, ITransaction revert)
-        {
-            _accountHistory = newList;
-            _calculateInterestCommand = calcInterest;
-            _checkBalanceCommand = checkBal;
-            _depositCommand = deposit;
-            _withdrawCommand = withdraw;
-            _revertCommand = revert;
-        }
-
-        //-- Method that allows the Teller(Invoker) to pull the history out of the class
-        public List<ITransaction> GetHistory()
-        {
-            return _accountHistory;
+            AccountHistory = new List<ITransaction>();
+            CalculateInterestCommand = calcInterest;
+            CheckBalanceCommand = checkBal;
+            DepositCommand = deposit;
+            WithdrawCommand = withdraw;
         }
 
         //-- Invoker methods that are used to store Transaction(ConcreteCommand) history and execute said ConcreteCommand
         public void CalculateInterest()
         {
-            _accountHistory.Add(_calculateInterestCommand);
-            _calculateInterestCommand.Execute();
+            AccountHistory.Add(CalculateInterestCommand);
+            CalculateInterestCommand.Execute();
         }
         public void CheckBalance()
         {
-            _accountHistory.Add(_checkBalanceCommand);
-            _checkBalanceCommand.Execute();
+            CheckBalanceCommand.Execute();
         }
         public void Deposit()
         {
-            _accountHistory.Add(_depositCommand);
-            _depositCommand.Execute();
+            AccountHistory.Add(DepositCommand);
+            DepositCommand.Execute();
         }
         public void Withdraw()
         {
-            _accountHistory.Add(_withdrawCommand);
-            _withdrawCommand.Execute();
+            AccountHistory.Add(WithdrawCommand);
+            WithdrawCommand.Execute();
         }
-        public void Revert()
+        public void Revert(int id)
         {
-            _accountHistory.Add(_revertCommand);
-            _revertCommand.Execute();
+            AccountHistory.Add(RevertCommand);
+            if (RevertCommand.Execute()) AccountHistory[id-1].ValidTransaction = false;
         }
     }
 }
