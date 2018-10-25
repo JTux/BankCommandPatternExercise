@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace CommandPattern.UserInterface.ConsoleItems
 {
+    //-- This RealConsole class will be used when the program is running outside of Testing
     public class RealConsole : IConsole
     {
         public void Clear()

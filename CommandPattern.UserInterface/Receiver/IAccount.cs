@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace CommandPattern.UserInterface.Receiver
 {
+    //-- Interface used on BankAccounts that will allow for unit testing
     public interface IAccount
     {
         decimal AccountBalance { get; set; }

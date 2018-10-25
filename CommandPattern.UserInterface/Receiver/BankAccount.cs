@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace CommandPattern.UserInterface.Receiver
 {
+    //-- Class that implements the IAccount interface and will act as the Receiver
     public class BankAccount : IAccount
     {
         public decimal AccountBalance { get; set; }
@@ -71,6 +72,7 @@ namespace CommandPattern.UserInterface.Receiver
             return true;
         }
 
+        //-- Helper method that makes sure the value does not go past the 100ths place
         private decimal TruncateBalance(decimal value)
         {
             var decimalPosition = value.ToString().IndexOf('.');

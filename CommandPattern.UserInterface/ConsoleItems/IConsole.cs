@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace CommandPattern.UserInterface.ConsoleItems
 {
+    //Interface used to allow implementation of Testing
     public interface IConsole
     {
         void WriteLine(string s);

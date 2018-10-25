@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace CommandPattern.UserInterface.Command
 {
+    //-- This is the Command, or the Interface that will be implemented across all ConcreteCommands
     public interface ITransaction
     {
         int TransactionID { get; set; }

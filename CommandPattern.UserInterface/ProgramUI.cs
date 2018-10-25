@@ -121,12 +121,14 @@ namespace CommandPattern.UserInterface
 
         #region Invoker Methods
         //-- Helper methods that allow us to break up the code that needs to fire to invoke a Concrete Command
+        //-- Calls the Invoker method CheckBalance() that calls the ConcreteCommand CheckBalance
         private void DoBalance()
         {
             _balance = new CheckBalance(_account, _transactionCount);
             UpdateTeller();
             _teller.CheckBalance();
         }
+        //-- Calls the Invoker method Withdraw() that calls the ConcreteCommand Withdraw
         private void DoWithdraw()
         {
             _console.Write("How much is being withdrawn?\n$");
@@ -134,6 +136,7 @@ namespace CommandPattern.UserInterface
             UpdateTeller();
             _teller.Withdraw();
         }
+        //-- Calls the Invoker method Deposit() that calls the ConcreteCommand Deposit
         private void DoDeposit()
         {
             _console.Write("How much is being deposited?\n$");
@@ -141,19 +144,14 @@ namespace CommandPattern.UserInterface
             UpdateTeller();
             _teller.Deposit();
         }
+        //-- Calls the Invoker method CalculateInterest() that calls the ConcreteCommand CalculateInterest
         private void DoInterest()
         {
             _interest = new CalculateInterest(_account, _transactionCount);
             UpdateTeller();
             _teller.CalculateInterest();
         }
-        private void DoHistory()
-        {
-            _console.Clear();
-            var history = _teller.GetHistory();
-            foreach (var transaction in history)
-                _console.WriteLine(transaction);
-        }
+        //-- Calls the Invoker method Revert() that calls the ConcreteCommand RevertTransaction
         private void RevertTransaction()
         {
             var transaction = GetTransaction();
@@ -173,6 +171,14 @@ namespace CommandPattern.UserInterface
                 }
             }
         }
+        //-- Calls the Invoker method GetHistory() that returns the list of Transactions
+        private void DoHistory()
+        {
+            _console.Clear();
+            var history = _teller.GetHistory();
+            foreach (var transaction in history)
+                _console.WriteLine(transaction);
+        }
         #endregion
 
         //-- Other helper methods
@@ -184,6 +190,7 @@ namespace CommandPattern.UserInterface
             UpdateTeller();
         }
 
+        //-- Helper method that checks user input and returns correct Transaction from the Account History list
         private ITransaction GetTransaction()
         {
             int value = 0;
@@ -204,12 +211,14 @@ namespace CommandPattern.UserInterface
             else return new CheckBalance(_account, 0);
         }
 
+        //-- Simple TryParse that loops until the user enters a valid input
         private decimal GetValue()
         {
             while (true)
                 if (decimal.TryParse(_console.ReadLine(), out decimal output)) return output;
         }
 
+        //-- Helper method that updates the Teller(Invoker) with the newest information
         private void UpdateTeller()
         {
             var history = _teller.GetHistory();
