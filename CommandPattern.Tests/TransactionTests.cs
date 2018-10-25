@@ -1,8 +1,6 @@
-﻿using System;
-using CommandPattern.UserInterface.Command;
-using CommandPattern.UserInterface.Command.ConcreteCommands;
-using CommandPattern.UserInterface.Invoker;
-using CommandPattern.UserInterface.Receiver;
+﻿using System.Collections.Generic;
+using CommandPattern.UserInterface;
+using CommandPattern.UserInterface.ConsoleItems;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommandPattern.Tests
@@ -10,24 +8,56 @@ namespace CommandPattern.Tests
     [TestClass]
     public class TransactionTests
     {
-        private int _transactionCount;
-        private IAccount _account;
-        private ITransaction _interest, _balance, _deposit, _withdraw, _revert;
-        private Teller _teller;
-
-        [TestInitialize]
-        public void Arrange()
+        [TestMethod]
+        public void ProgramUI_WithdrawCommand_BalanceReturnsCorrectValue()
         {
-            _transactionCount = 0;
-            _account = new BankAccount();
-            _interest = new CalculateInterest(_account, _transactionCount);
+            //-- Arrange
+            var console = new MockConsole(new string[] { "2", "100", "7" });
+            var program = new ProgramUI(console);
 
+            //-- Act
+            program.Run();
+
+            var expected = 400m;
+            var actual = program.GetCurrentAccount().AccountBalance;
+
+            //-- Assert
+            Assert.AreEqual(expected, actual);
         }
 
         [TestMethod]
-        public void TestMethod1()
+        public void ProgramUI_OverdrawWithdrawCommand_BalanceShouldNotChange()
         {
+            //-- Arrange
+            var console = new MockConsole(new string[] { "2", "9000.01", "7" });
+            var program = new ProgramUI(console);
 
+            //-- Act
+            var expected = program.GetCurrentAccount().AccountBalance;
+
+            program.Run();
+
+            var actual = program.GetCurrentAccount().AccountBalance;
+
+            //-- Assert
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void ProgramUI_DepositCommand_BalanceReturnsCorrectValue()
+        {
+            //-- Arrange
+            var console = new MockConsole(new string[] { "3", "100", "7" });
+            var program = new ProgramUI(console);
+
+            //-- Act
+            program.Run();
+
+            var expected = 600m;
+            var actual = program.GetCurrentAccount().AccountBalance;
+
+            //-- Assert
+            Assert.AreEqual(expected, actual);
         }
     }
 }

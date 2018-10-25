@@ -49,6 +49,8 @@
     <Compile Include="Command\ConcreteCommands\RevertTransaction.cs" />
     <Compile Include="Command\ConcreteCommands\Withdraw.cs" />
     <Compile Include="Command\ITransaction.cs" />
+    <Compile Include="ConsoleItems\IConsole.cs" />
+    <Compile Include="ConsoleItems\RealConsole.cs" />
     <Compile Include="Invoker\Teller.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProgramUI.cs" />

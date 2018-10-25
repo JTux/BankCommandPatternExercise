@@ -29,13 +29,7 @@ namespace CommandPattern.UserInterface.Receiver
             }
             else return false;
         }
-        private decimal TruncateBalance(decimal value)
-        {
-            var decimalPosition = value.ToString().IndexOf('.');
-            if (decimalPosition > 0)
-                value = decimal.Parse(value.ToString().Substring(0, decimalPosition + 3));
-            return value;
-        }
+
         public bool CheckBalance()
         {
             Console.WriteLine($"Current account balance is ${AccountBalance}.");
@@ -75,6 +69,14 @@ namespace CommandPattern.UserInterface.Receiver
             AccountBalance += revertValue;
             Console.WriteLine($"Current account balance is ${AccountBalance}.");
             return true;
+        }
+
+        private decimal TruncateBalance(decimal value)
+        {
+            var decimalPosition = value.ToString().IndexOf('.');
+            if (decimalPosition > 0)
+                value = decimal.Parse(value.ToString().Substring(0, decimalPosition + 3));
+            return value;
         }
     }
 }

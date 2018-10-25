@@ -1,5 +1,6 @@
 ﻿using CommandPattern.UserInterface.Command;
 using CommandPattern.UserInterface.Command.ConcreteCommands;
+using CommandPattern.UserInterface.ConsoleItems;
 using CommandPattern.UserInterface.Invoker;
 using CommandPattern.UserInterface.Receiver;
 using System;
@@ -13,6 +14,9 @@ namespace CommandPattern.UserInterface
     public class ProgramUI
     {
         #region Fields
+        //-- Console declaration
+        private IConsole _console;
+
         //-- Used to simulate creating IDs for Transactions
         private int _transactionCount;
 
@@ -26,46 +30,39 @@ namespace CommandPattern.UserInterface
         private Teller _teller;
         #endregion
 
-        //-- Constructor that will assign values/instantiate the classes
+        //-- Constructor that will assign values/instantiate the classes as well as allow for DI for Unit Testings
         public ProgramUI()
         {
-            _transactionCount = 1;
-
-            _account = new BankAccount
-            {
-                AccountBalance = 500.00m,
-                InterestPercentage = 0.0215m
-            };
-
-            _interest = new CalculateInterest(_account, _transactionCount);
-            _balance = new CheckBalance(_account, _transactionCount);
-            _deposit = new Deposit(_account, 0m, _transactionCount);
-            _withdraw = new Withdraw(_account, 0m, _transactionCount);
-            _revert = new RevertTransaction(_account, 0m, _transactionCount, 0);
-
-            _teller = new Teller(_interest, _balance, _deposit, _withdraw);
+            _console = new RealConsole();
+            InitializeFields();
+        }
+        public ProgramUI(IConsole console)
+        {
+            _console = console;
+            InitializeFields();
         }
 
         //-- Method that can be called from the outside that runs the bulk of the program
         public void Run()
         {
-            while (true)
+            var exit = false;
+            while (!exit)
             {
                 var accountHistory = _teller.GetHistory();
-                Console.WriteLine("What would you like to do?" +
+                _console.WriteLine("What would you like to do?" +
                     "\n1) Check balance" +
                     "\n2) Make a withdrawal" +
                     "\n3) Make a deposit" +
                     "\n4) Calculate interest" +
                     "\n5) See Account History" +
-                    "\n6) Revert Transaction");
-
+                    "\n6) Revert Transaction" +
+                    "\n7) Exit");
 
                 //-- Interactive code that allows the user to decide which Concrete Command they want to fire off
                 int response;
-                while (!int.TryParse(Console.ReadLine(), out response))
+                while (!int.TryParse(_console.ReadLine(), out response))
                 {
-                    Console.Write("Enter valid input: ");
+                    _console.Write("Enter valid input: ");
                 }
                 switch (response)
                 {
@@ -87,12 +84,39 @@ namespace CommandPattern.UserInterface
                     case 6:
                         RevertTransaction();
                         break;
+                    case 7:
+                        exit = true;
+                        break;
                     default:
-                        Console.Write("Enter valid input: ");
+                        _console.Write("Enter valid input: ");
                         break;
                 }
                 EndSwitch();
             }
+        }
+
+        public IAccount GetCurrentAccount()
+        {
+            return _account;
+        }
+
+        private void InitializeFields()
+        {
+            _transactionCount = 1;
+
+            _account = new BankAccount
+            {
+                AccountBalance = 500.00m,
+                InterestPercentage = 0.0215m
+            };
+
+            _interest = new CalculateInterest(_account, _transactionCount);
+            _balance = new CheckBalance(_account, _transactionCount);
+            _deposit = new Deposit(_account, 0m, _transactionCount);
+            _withdraw = new Withdraw(_account, 0m, _transactionCount);
+            _revert = new RevertTransaction(_account, 0m, _transactionCount, 0);
+
+            _teller = new Teller(_interest, _balance, _deposit, _withdraw);
         }
 
         #region Invoker Methods
@@ -105,14 +129,14 @@ namespace CommandPattern.UserInterface
         }
         private void DoWithdraw()
         {
-            Console.Write("How much is being withdrawn?\n$");
+            _console.Write("How much is being withdrawn?\n$");
             _withdraw = new Withdraw(_account, GetValue(), _transactionCount);
             UpdateTeller();
             _teller.Withdraw();
         }
         private void DoDeposit()
         {
-            Console.Write("How much is being deposited?\n$");
+            _console.Write("How much is being deposited?\n$");
             _deposit = new Deposit(_account, GetValue(), _transactionCount);
             UpdateTeller();
             _teller.Deposit();
@@ -125,10 +149,10 @@ namespace CommandPattern.UserInterface
         }
         private void DoHistory()
         {
-            Console.Clear();
+            _console.Clear();
             var history = _teller.GetHistory();
             foreach (var transaction in history)
-                Console.WriteLine(transaction);
+                _console.WriteLine(transaction);
         }
         private void RevertTransaction()
         {
@@ -151,13 +175,12 @@ namespace CommandPattern.UserInterface
         }
         #endregion
 
-
         //-- Other helper methods
         private void EndSwitch()
         {
-            Console.WriteLine("Press any key to continue...");
-            Console.ReadKey();
-            Console.Clear();
+            _console.WriteLine("Press any key to continue...");
+            _console.ReadKey();
+            _console.Clear();
             UpdateTeller();
         }
 
@@ -166,11 +189,11 @@ namespace CommandPattern.UserInterface
             int value = 0;
 
             DoHistory();
-            Console.WriteLine("Which Transaction would you like to revert?");
+            _console.WriteLine("Which Transaction would you like to revert?");
 
-            while (!int.TryParse(Console.ReadLine(), out value) || !(_teller.GetHistory().Count >= value))
+            while (!int.TryParse(_console.ReadLine(), out value) || !(_teller.GetHistory().Count >= value))
             {
-                Console.Write("Enter valid input: ");
+                _console.Write("Enter valid input: ");
             }
 
             if (value != 0)
@@ -184,7 +207,7 @@ namespace CommandPattern.UserInterface
         private decimal GetValue()
         {
             while (true)
-                if (decimal.TryParse(Console.ReadLine(), out decimal output)) return output;
+                if (decimal.TryParse(_console.ReadLine(), out decimal output)) return output;
         }
 
         private void UpdateTeller()

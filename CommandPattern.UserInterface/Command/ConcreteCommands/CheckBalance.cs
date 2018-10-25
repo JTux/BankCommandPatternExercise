@@ -29,6 +29,7 @@ namespace CommandPattern.UserInterface.Command.ConcreteCommands
             }
             else return false;
         }
+
         public override string ToString() => $"{TransactionID}. Balance check. Valid: {ValidTransaction}";
     }
 }
