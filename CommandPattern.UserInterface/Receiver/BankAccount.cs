@@ -16,25 +16,26 @@ namespace CommandPattern.UserInterface.Receiver
             var oldBal = AccountBalance;
 
             var newMoney = AccountBalance * InterestPercentage;
-
-            var decimalPosition = newMoney.ToString().IndexOf('.');
-            if (decimalPosition > 0)
-                newMoney = decimal.Parse(newMoney.ToString().Substring(0, decimalPosition + 3));
+            newMoney = TruncateBalance(newMoney);
 
             if (AccountBalance + newMoney != oldBal)
             {
                 AccountBalance += (AccountBalance * InterestPercentage);
+                AccountBalance = TruncateBalance(AccountBalance);
 
-                decimalPosition = AccountBalance.ToString().IndexOf('.');
-                AccountBalance = decimal.Parse(AccountBalance.ToString().Substring(0, decimalPosition + 3));
-
-                Console.WriteLine($"Account has added {newMoney} in interest." +
-                    $"Current account balance is {AccountBalance}.");
+                Console.WriteLine($"Account has added ${newMoney} in interest.\n" +
+                    $"Current account balance is ${AccountBalance}.");
                 return true;
             }
             else return false;
         }
-
+        private decimal TruncateBalance(decimal value)
+        {
+            var decimalPosition = value.ToString().IndexOf('.');
+            if (decimalPosition > 0)
+                value = decimal.Parse(value.ToString().Substring(0, decimalPosition + 3));
+            return value;
+        }
         public bool CheckBalance()
         {
             Console.WriteLine($"Current account balance is ${AccountBalance}.");

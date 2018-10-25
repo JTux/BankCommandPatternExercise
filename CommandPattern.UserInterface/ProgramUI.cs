@@ -54,7 +54,10 @@ namespace CommandPattern.UserInterface
                     "\n5) See Account History");
 
                 int response;
-                while (!int.TryParse(Console.ReadLine(), out response)) { }
+                while (!int.TryParse(Console.ReadLine(), out response))
+                {
+                    Console.Write("Enter valid input: ");
+                }
                 switch (response)
                 {
                     case 1:
@@ -73,7 +76,7 @@ namespace CommandPattern.UserInterface
                         DoHistory();
                         break;
                     default:
-                        Console.WriteLine("Invalid input");
+                        Console.Write("Enter valid input: ");
                         break;
                 }
                 EndSwitch();
@@ -88,14 +91,14 @@ namespace CommandPattern.UserInterface
         }
         private void DoWithdraw()
         {
-            Console.WriteLine("How much is being withdrawn?");
+            Console.Write("How much is being withdrawn?\n$");
             _withdraw = new Withdraw(_account, GetValue(), _transactionCount);
             UpdateTeller();
             _teller.Withdraw();
         }
         private void DoDeposit()
         {
-            Console.WriteLine("How much is being deposited?");
+            Console.Write("How much is being deposited?\n$");
             _deposit = new Deposit(_account, GetValue(), _transactionCount);
             UpdateTeller();
             _teller.Deposit();
@@ -108,6 +111,7 @@ namespace CommandPattern.UserInterface
         }
         private void DoHistory()
         {
+            Console.Clear();
             var history = _teller.GetHistory();
             foreach (var transaction in history)
                 Console.WriteLine(transaction);
