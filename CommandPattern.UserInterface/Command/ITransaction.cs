@@ -10,6 +10,7 @@ namespace CommandPattern.UserInterface.Command
     {
         int TransactionID { get; set; }
         bool ValidTransaction { get; set; }
+        decimal TransactionValue { get; set; }
         bool Execute();
     }
 }

@@ -69,5 +69,12 @@ namespace CommandPattern.UserInterface.Receiver
                 return false;
             }
         }
+
+        public bool Revert(decimal revertValue)
+        {
+            AccountBalance += revertValue;
+            Console.WriteLine($"Current account balance is ${AccountBalance}.");
+            return true;
+        }
     }
 }

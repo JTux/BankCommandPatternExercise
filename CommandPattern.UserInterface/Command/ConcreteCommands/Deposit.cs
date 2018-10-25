@@ -11,19 +11,19 @@ namespace CommandPattern.UserInterface.Command.ConcreteCommands
     {
         public bool ValidTransaction { get; set; }
         public int TransactionID { get; set; }
+        public decimal TransactionValue { get; set; }
         private IAccount _account;
-        private decimal _value;
 
         public Deposit(IAccount account, decimal depositValue, int id)
         {
             TransactionID = id;
             _account = account;
-            _value = depositValue;
+            TransactionValue = depositValue;
         }
 
         public bool Execute()
         {
-            if (_account.Deposit(_value))
+            if (_account.Deposit(TransactionValue))
             {
                 ValidTransaction = true;
                 return true;
@@ -31,6 +31,6 @@ namespace CommandPattern.UserInterface.Command.ConcreteCommands
             else return false;
         }
 
-        public override string ToString() => $"{TransactionID}. Deposited ${_value}";
+        public override string ToString() => $"{TransactionID}. Deposited ${TransactionValue}. Valid: {ValidTransaction}";
     }
 }

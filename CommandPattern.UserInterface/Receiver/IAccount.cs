@@ -15,5 +15,6 @@ namespace CommandPattern.UserInterface.Receiver
         bool CheckBalance();
         bool Deposit(decimal depositValue);
         bool Withdraw(decimal withdrawValue);
+        bool Revert(decimal revertValue);
     }
 }

@@ -13,6 +13,7 @@ namespace CommandPattern.UserInterface.Invoker
         private ITransaction _checkBalanceCommand;
         private ITransaction _depositCommand;
         private ITransaction _withdrawCommand;
+        private ITransaction _revertCommand;
 
         private List<ITransaction> _accountHistory;
 
@@ -25,13 +26,14 @@ namespace CommandPattern.UserInterface.Invoker
             _withdrawCommand = withdraw;
         }
 
-        public Teller(ITransaction calcInterest, ITransaction checkBal, ITransaction deposit, ITransaction withdraw, List<ITransaction> newList)
+        public Teller(ITransaction calcInterest, ITransaction checkBal, ITransaction deposit, ITransaction withdraw, List<ITransaction> newList, ITransaction revert)
         {
             _accountHistory = newList;
             _calculateInterestCommand = calcInterest;
             _checkBalanceCommand = checkBal;
             _depositCommand = deposit;
             _withdrawCommand = withdraw;
+            _revertCommand = revert;
         }
         public void CalculateInterest()
         {
@@ -52,6 +54,11 @@ namespace CommandPattern.UserInterface.Invoker
         {
             _accountHistory.Add(_withdrawCommand);
             _withdrawCommand.Execute();
+        }
+        public void Revert()
+        {
+            _accountHistory.Add(_revertCommand);
+            _revertCommand.Execute();
         }
 
         public List<ITransaction> GetHistory()

@@ -11,6 +11,7 @@ namespace CommandPattern.UserInterface.Command.ConcreteCommands
     {
         public bool ValidTransaction { get; set; }
         public int TransactionID { get; set; }
+        public decimal TransactionValue { get; set; }
         private IAccount _account;
 
         public CheckBalance(IAccount account, int id)
@@ -28,6 +29,6 @@ namespace CommandPattern.UserInterface.Command.ConcreteCommands
             }
             else return false;
         }
-        public override string ToString() => $"{TransactionID}. Balance check";
+        public override string ToString() => $"{TransactionID}. Balance check. Valid: {ValidTransaction}";
     }
 }

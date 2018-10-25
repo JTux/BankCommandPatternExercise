@@ -7,23 +7,25 @@ using System.Threading.Tasks;
 
 namespace CommandPattern.UserInterface.Command.ConcreteCommands
 {
-    public class Withdraw : ITransaction
+    public class RevertTransaction : ITransaction
     {
-        public bool ValidTransaction { get; set; }
         public int TransactionID { get; set; }
+        public bool ValidTransaction { get; set; }
         public decimal TransactionValue { get; set; }
+        public int OldID { get; set; }
         private IAccount _account;
 
-        public Withdraw(IAccount account, decimal withdrawValue, int id)
+        public RevertTransaction(IAccount account, decimal oldValue, int id, int oldId)
         {
             TransactionID = id;
+            TransactionValue = oldValue;
             _account = account;
-            TransactionValue = withdrawValue;
+            OldID = oldId;
         }
 
         public bool Execute()
         {
-            if (_account.Withdraw(TransactionValue))
+            if (_account.Revert(TransactionValue))
             {
                 ValidTransaction = true;
                 return true;
@@ -31,6 +33,6 @@ namespace CommandPattern.UserInterface.Command.ConcreteCommands
             else return false;
         }
 
-        public override string ToString() => $"{TransactionID}. Withdrew ${TransactionValue}. Valid: {ValidTransaction}";
+        public override string ToString() => $"{TransactionID}. Reverted Transaction {OldID} and adjusted balance by ${TransactionValue}. Valid: {ValidTransaction}";
     }
 }

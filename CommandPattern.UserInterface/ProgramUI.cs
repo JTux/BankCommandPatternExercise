@@ -18,6 +18,7 @@ namespace CommandPattern.UserInterface
         private ITransaction _balance;
         private ITransaction _deposit;
         private ITransaction _withdraw;
+        private ITransaction _revert;
 
         private IAccount _account;
 
@@ -37,6 +38,7 @@ namespace CommandPattern.UserInterface
             _balance = new CheckBalance(_account, _transactionCount);
             _deposit = new Deposit(_account, 0m, _transactionCount);
             _withdraw = new Withdraw(_account, 0m, _transactionCount);
+            _revert = new RevertTransaction(_account, 0m, _transactionCount, 0);
 
             _teller = new Teller(_interest, _balance, _deposit, _withdraw);
         }
@@ -51,7 +53,8 @@ namespace CommandPattern.UserInterface
                     "\n2) Make a withdrawal" +
                     "\n3) Make a deposit" +
                     "\n4) Calculate interest" +
-                    "\n5) See Account History");
+                    "\n5) See Account History" +
+                    "\n6) Revert Transaction");
 
                 int response;
                 while (!int.TryParse(Console.ReadLine(), out response))
@@ -74,6 +77,9 @@ namespace CommandPattern.UserInterface
                         break;
                     case 5:
                         DoHistory();
+                        break;
+                    case 6:
+                        RevertTransaction();
                         break;
                     default:
                         Console.Write("Enter valid input: ");
@@ -116,6 +122,42 @@ namespace CommandPattern.UserInterface
             foreach (var transaction in history)
                 Console.WriteLine(transaction);
         }
+        private void RevertTransaction()
+        {
+            var transaction = GetTransaction();
+            if (transaction.ValidTransaction)
+            {
+                if (transaction.GetType() == typeof(CalculateInterest) || transaction.GetType() == typeof(Withdraw))
+                {
+                    _revert = new RevertTransaction(_account, transaction.TransactionValue, _transactionCount, transaction.TransactionID);
+                    UpdateTeller();
+                    _teller.Revert();
+                }
+                else if (transaction.GetType() == typeof(Deposit) || transaction.GetType() == typeof(RevertTransaction))
+                {
+                    _revert = new RevertTransaction(_account, (transaction.TransactionValue * -1), _transactionCount, transaction.TransactionID);
+                    UpdateTeller();
+                    _teller.Revert();
+                }
+            }
+        }
+        private ITransaction GetTransaction()
+        {
+            int value = 0;
+
+            DoHistory();
+            Console.WriteLine("Which Transaction would you like to revert?");
+
+            while (!int.TryParse(Console.ReadLine(), out value) || !(_teller.GetHistory().Count >= value))
+            { Console.Write("Enter valid input: "); }
+
+            if (value != 0)
+            {
+                var transaction = _teller.GetHistory()[value - 1];
+                return transaction;
+            }
+            else return new CheckBalance(_account, 0);
+        }
 
         private void EndSwitch()
         {
@@ -135,7 +177,7 @@ namespace CommandPattern.UserInterface
         {
             var history = _teller.GetHistory();
             _transactionCount = history.Count + 1;
-            _teller = new Teller(_interest, _balance, _deposit, _withdraw, history);
+            _teller = new Teller(_interest, _balance, _deposit, _withdraw, history, _revert);
         }
     }
 }

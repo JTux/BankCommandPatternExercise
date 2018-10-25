@@ -46,6 +46,7 @@
     <Compile Include="Command\ConcreteCommands\CalculateInterest.cs" />
     <Compile Include="Command\ConcreteCommands\CheckBalance.cs" />
     <Compile Include="Command\ConcreteCommands\Deposit.cs" />
+    <Compile Include="Command\ConcreteCommands\RevertTransaction.cs" />
     <Compile Include="Command\ConcreteCommands\Withdraw.cs" />
     <Compile Include="Command\ITransaction.cs" />
     <Compile Include="Invoker\Teller.cs" />

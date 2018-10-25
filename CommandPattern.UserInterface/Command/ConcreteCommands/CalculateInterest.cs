@@ -11,6 +11,7 @@ namespace CommandPattern.UserInterface.Command.ConcreteCommands
     {
         public bool ValidTransaction { get; set; }
         public int TransactionID { get; set; }
+        public decimal TransactionValue { get; set; }
         private IAccount _account;
 
         public CalculateInterest(IAccount account, int id)
@@ -21,6 +22,8 @@ namespace CommandPattern.UserInterface.Command.ConcreteCommands
 
         public bool Execute()
         {
+            TransactionValue = _account.AccountBalance * _account.InterestPercentage;
+            TransactionValue = TruncateBalance(TransactionValue);
             if (_account.CalculateInterest())
             {
                 ValidTransaction = true;
@@ -29,6 +32,14 @@ namespace CommandPattern.UserInterface.Command.ConcreteCommands
             else return false;
         }
 
-        public override string ToString() => $"{TransactionID}. Accrued interest.";
+        private decimal TruncateBalance(decimal value)
+        {
+            var decimalPosition = value.ToString().IndexOf('.');
+            if (decimalPosition > 0)
+                value = decimal.Parse(value.ToString().Substring(0, decimalPosition + 3));
+            return value;
+        }
+
+        public override string ToString() => $"{TransactionID}. Accrued ${TransactionValue} in interest. Valid: {ValidTransaction}";
     }
 }
